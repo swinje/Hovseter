@@ -38,6 +38,7 @@ function makeURL(oA, oB) {
 }
 
 // Pulling out time for next stop minus time now and result is hours : minutes to next
+// Works uhm almost all the time...
 var parseFeed = function(data) {
     var dateNow = new Date();
     console.log(dateNow);
