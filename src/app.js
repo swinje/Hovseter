@@ -30,7 +30,7 @@ function makeURL(oA, oB) {
     ('0' + currentdate.getHours()).slice(-2) + "" +
     ('0' + currentdate.getMinutes()).slice(-2) + "" +
     ('0' + currentdate.getSeconds()).slice(-2);
-
+  //console.log("currenttime " + currenttime);
   var URL = 'http://reisapi.ruter.no/Travel/GetTravels?fromPlace=' + 
     oA + '&toPlace=' + oB +'&isafter=True&time='+currenttime;
 
@@ -41,14 +41,15 @@ function makeURL(oA, oB) {
 // Works uhm almost all the time...
 var parseFeed = function(data) {
     var dateNow = new Date();
-    console.log(dateNow);
+    console.log("systemdate " + dateNow);
     // Not sure if the object from ReisAPI is indeed UTC -- seems local Oslo
-    var nextTravel = new Date(data.TravelProposals[0].DepartureTime);
-    var hours = nextTravel.getUTCHours() - dateNow.getHours();
-    var minutes = nextTravel.getUTCMinutes() - dateNow.getMinutes();
-    
-    if (hours < 0)
-       hours = hours + 24;
+    var gmt = new Date(data.TravelProposals[0].DepartureTime);
+    var utc = gmt.getTime() + (gmt.getTimezoneOffset() * 60000);
+    var nextTravel = new Date(utc);
+    console.log("nextraveldate " + nextTravel);
+    var diff = new Date(Math.abs(nextTravel - dateNow));
+    var hours = diff.getUTCHours();
+    var minutes = diff.getUTCMinutes();
     console.log(hours + ":" + minutes);
     return (hours <= 9 ? "0" : "") + hours + ":" + (minutes <= 9 ? "0" : "") + minutes;
 };
